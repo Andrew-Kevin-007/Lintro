@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # AI Code Review Bot
 
 An AI-powered code review environment inspired by VS Code, featuring a code editor and terminal-style review panel that provides instant, structured feedback on your code.
@@ -144,3 +145,7 @@ For issues or questions:
 - [ ] Custom review templates
 - [ ] Team collaboration features
 - [ ] Plugin system for custom rules
+=======
+# Lintro
+AI-powered code reviewer that ensures clean, efficient, and error-free development.
+>>>>>>> b9c34f7dcc1cf2a4f7bbba04f2c26ef103e7f05e
