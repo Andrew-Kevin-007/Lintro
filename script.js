@@ -586,7 +586,7 @@ console.log('Hello, World!');`);
 class AIReviewService {
     constructor() {
         // Get your free API key from: https://aistudio.google.com/
-        this.apiKey = 'AIzaSyBah9AOFiVMMksbUiat7m2-mgpsQOKRptc'; // Replace with your actual key
+        this.apiKey = '#########'; // Replace with your actual key
         this.apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
     }
 
