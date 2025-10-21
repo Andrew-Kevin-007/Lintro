@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Code Review Bot - Professional Code Editor</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/dracula.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/one-dark.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="header-left">
+                    <div class="logo">
+                        <div class="logo-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="logo-text">
+                            <h1>CodeReview AI</h1>
+                            <span class="logo-subtitle">Professional Code Analysis</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="header-center">
+                    <div class="language-selector-wrapper">
+                        <div class="language-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M14 2V8H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <select id="language-selector" class="language-selector">
+                            <option value="javascript">JavaScript</option>
+                            <option value="python">Python</option>
+                            <option value="java">Java</option>
+                            <option value="cpp">C++</option>
+                            <option value="typescript">TypeScript</option>
+                            <option value="go">Go</option>
+                            <option value="rust">Rust</option>
+                            <option value="html">HTML</option>
+                            <option value="css">CSS</option>
+                            <option value="php">PHP</option>
+                        </select>
+                    </div>
+                    
+                    <div class="theme-selector-wrapper">
+                        <div class="theme-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                <circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="2"/>
+                                <path d="M12 1V3M12 21V23M4.22 4.22L5.64 5.64M18.36 18.36L19.78 19.78M1 12H3M21 12H23M4.22 19.78L5.64 18.36M18.36 5.64L19.78 4.22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <select id="theme-selector" class="theme-selector">
+                            <option value="monokai">Monokai</option>
+                            <option value="dracula">Dracula</option>
+                            <option value="material">Material</option>
+                            <option value="one-dark">One Dark</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="header-right">
+                    <div class="action-buttons">
+                        <button id="format-btn" class="action-btn format-btn" title="Format Code (Ctrl+Shift+F)">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                <path d="M3 6H21M3 12H21M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            <span>Format</span>
+                        </button>
+                        
+                        <button id="review-btn" class="action-btn primary-btn" title="Review Code (Ctrl+Enter)">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
+                                <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <span>Review</span>
+                        </button>
+                        
+                        <button id="clear-btn" class="action-btn danger-btn" title="Clear Editor (Ctrl+N)">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                <path d="M3 6H5H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M8 6V4C8 3.45 8.45 3 9 3H15C15.55 3 16 3.45 16 4V6M19 6V20C19 20.55 18.55 21 18 21H6C5.45 21 5 20.55 5 20V6H19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <span>Clear</span>
+                        </button>
+                    </div>
+                    
+                    <div class="status-indicator">
+                        <div class="status-dot"></div>
+                        <span class="status-text">Ready</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Code Editor Panel -->
+            <div class="editor-panel">
+                <div class="editor-header">
+                    <div class="file-tabs">
+                        <div class="file-tab active">
+                            <div class="file-icon">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                                    <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M14 2V8H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <span class="file-name">main</span>
+                            <span class="file-extension">.js</span>
+                            <button class="close-tab" title="Close tab">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                                    <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="editor-controls">
+                        <div class="editor-stats">
+                            <div class="stat-item">
+                                <span class="stat-icon">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                                        <path d="M3 3H21V21H3V3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M9 9H15V15H9V9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </span>
+                                <span id="line-count">1</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-icon">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                                        <path d="M21 16V8C21 7.45 20.55 7 20 7H4C3.45 7 3 7.45 3 8V16C3 16.55 3.45 17 4 17H20C20.55 17 21 16.55 21 16Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M7 11H17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                        <path d="M7 13H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                    </svg>
+                                </span>
+                                <span id="char-count">0</span>
+                            </div>
+                        </div>
+                        
+                        <div class="editor-actions">
+                            <button class="editor-action-btn" title="Undo (Ctrl+Z)">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                                    <path d="M3 7V13H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M21 17C21 14.24 18.76 11.5 15.5 11.5C12.24 11.5 9 14.24 9 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                            <button class="editor-action-btn" title="Redo (Ctrl+Y)">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                                    <path d="M21 7V13H15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M3 17C3 14.24 5.24 11.5 8.5 11.5C11.76 11.5 15 14.24 15 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                            <button class="editor-action-btn" title="Find (Ctrl+F)">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                                    <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                            <button class="editor-action-btn" title="Replace (Ctrl+H)">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                                    <path d="M21 15V19C21 19.55 20.55 20 20 20H4C3.45 20 3 19.55 3 19V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M7 10L12 15L17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                            <div class="divider"></div>
+                            <button class="editor-action-btn" title="Toggle Review Panel (F9)">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                                    <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M21 12C21 16.97 16.97 21 12 21C7.03 21 3 16.97 3 12C3 7.03 7.03 3 12 3C16.97 3 21 7.03 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="editor-container">
+                    <div class="editor-wrapper">
+                        <textarea id="code-editor" placeholder="// Start coding here..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Review Panel -->
+            <div id="review-panel" class="review-panel">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <span class="panel-icon">🤖</span>
+                        <h3>AI Code Review</h3>
+                        <div class="review-status">
+                            <span class="status-indicator">
+                                <span class="status-dot"></span>
+                                <span class="status-text">Ready</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="panel-controls">
+                        <div class="review-stats">
+                            <span class="stat-item">
+                                <span class="stat-label">Issues:</span>
+                                <span id="issue-count">0</span>
+                            </span>
+                            <span class="stat-item">
+                                <span class="stat-label">Suggestions:</span>
+                                <span id="suggestion-count">0</span>
+                            </span>
+                        </div>
+                        <button id="close-review" class="close-btn">
+                            <span class="btn-icon">✕</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="review-content">
+                    <div id="review-output" class="review-output">
+                        <div class="welcome-message">
+                            <div class="welcome-header">
+                                <h4>🚀 AI Code Review Bot</h4>
+                                <p>Professional code analysis powered by AI</p>
+                            </div>
+                            <div class="features-grid">
+                                <div class="feature-card">
+                                    <div class="feature-icon">🔍</div>
+                                    <div class="feature-content">
+                                        <h5>Syntax Analysis</h5>
+                                        <p>Detect errors and runtime issues</p>
+                                    </div>
+                                </div>
+                                <div class="feature-card">
+                                    <div class="feature-icon">📖</div>
+                                    <div class="feature-content">
+                                        <h5>Code Quality</h5>
+                                        <p>Improve readability and structure</p>
+                                    </div>
+                                </div>
+                                <div class="feature-card">
+                                    <div class="feature-icon">⚡</div>
+                                    <div class="feature-content">
+                                        <h5>Performance</h5>
+                                        <p>Optimize for speed and efficiency</p>
+                                    </div>
+                                </div>
+                                <div class="feature-card">
+                                    <div class="feature-icon">🔒</div>
+                                    <div class="feature-content">
+                                        <h5>Security</h5>
+                                        <p>Identify vulnerabilities and risks</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="quick-start">
+                                <h5>Quick Start:</h5>
+                                <ol>
+                                    <li>Select your programming language</li>
+                                    <li>Type or paste your code</li>
+                                    <li>Press <kbd>Ctrl+Enter</kbd> or click "Review Code"</li>
+                                    <li>Get instant AI feedback!</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Loading Overlay -->
+        <div id="loading-overlay" class="loading-overlay hidden">
+            <div class="loading-spinner"></div>
+            <p>AI is analyzing your code...</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/go/go.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/rust/rust.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

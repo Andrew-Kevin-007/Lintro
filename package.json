@@ -1,0 +1,31 @@
+{
+  "name": "ai-code-review-bot",
+  "version": "1.0.0",
+  "description": "AI-powered code review environment inspired by VS Code",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "serve": "python -m http.server 8000",
+    "dev": "python -m http.server 8000"
+  },
+  "keywords": [
+    "ai",
+    "code-review",
+    "javascript",
+    "editor",
+    "vscode",
+    "codemirror"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/ai-code-review-bot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/ai-code-review-bot/issues"
+  },
+  "homepage": "https://github.com/yourusername/ai-code-review-bot#readme"
+}
